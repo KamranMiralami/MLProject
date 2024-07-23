@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1721728407",
+        "python_version": "3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\kamra\\OneDrive\\\u0388\u03b3\u03b3\u03c1\u03b1\u03c6\u03b1\\Github\\MLProject\\venv\\Scripts\\mlagents-learn trainer_config.yaml --run-id=test1",
+        "mlagents_version": "0.30.0",
+        "mlagents_envs_version": "0.30.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.3.1+cpu",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1721728468"
+    },
+    "total": 61.575465,
+    "count": 1,
+    "self": 0.0041060000000072705,
+    "children": {
+        "run_training.setup": {
+            "total": 0.11469889999999983,
+            "count": 1,
+            "self": 0.11469889999999983
+        },
+        "TrainerController.start_learning": {
+            "total": 61.45666009999999,
+            "count": 1,
+            "self": 7.429999998720405e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 61.456567400000004,
+                    "count": 1,
+                    "self": 61.456567400000004
+                },
+                "TrainerController._save_models": {
+                    "total": 1.8400000001861372e-05,
+                    "count": 1,
+                    "self": 1.8400000001861372e-05
+                }
+            }
+        }
+    }
+}
