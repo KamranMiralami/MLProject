@@ -1,5 +1,6 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 
@@ -14,6 +15,12 @@ public class PlayerMove : Agent
         rb= GetComponent<Rigidbody>();
         env=transform.parent.GetComponent<EnvironmentManager>();
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    public override void Initialize()
+    {
+        base.Initialize();
+        gameObject.GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize = 13 + env.FinishObjects.Count;
+        Debug.Log("vector obs size = " + gameObject.GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize);
     }
     void RotatePlayer(float input)
     {
@@ -31,6 +38,7 @@ public class PlayerMove : Agent
         transform.SetLocalPositionAndRotation(env.PlayerStartLocalPosition, env.PlayerStartRotation);
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        env.ResetEnvironment();
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
@@ -51,7 +59,10 @@ public class PlayerMove : Agent
         sensor.AddObservation(transform.localRotation);
         sensor.AddObservation(rb.linearVelocity);
         sensor.AddObservation(rb.angularVelocity);
-        sensor.AddObservation(Vector3.Distance(transform.localPosition,env.FinishObject.transform.localPosition));
+        foreach(var finishObj in env.FinishObjects)
+        {
+            sensor.AddObservation(Vector3.Distance(transform.localPosition, finishObj.transform.localPosition));
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -64,9 +75,17 @@ public class PlayerMove : Agent
         }
         if (other.CompareTag("RewardTriggers"))
         {
-            AddReward(1);
+            var rewardTrigger=other.GetComponent<RewardTrigger>();
+            AddReward(rewardTrigger.GetReward());
+            //Debug.Log("reward added");
         }
         if (other.CompareTag("GameOverTrigger"))
+        {
+            AddReward(-1);
+            //Debug.Log("game over, restarting episode");
+            EndEpisode();
+        }
+        if (other.CompareTag("Obstacle"))
         {
             AddReward(-1);
             //Debug.Log("game over, restarting episode");
